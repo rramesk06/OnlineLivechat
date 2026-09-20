@@ -1,0 +1,16 @@
+fastapi>=0.115,<1
+uvicorn[standard]>=0.34,<1
+python-multipart>=0.0.20,<1
+python-dotenv>=1.0,<2
+pymupdf>=1.25,<2
+langchain-text-splitters>=0.3,<1
+faiss-cpu>=1.9,<2
+numpy>=1.26,<3
+openai>=1.70,<3
+neo4j>=5.28,<7
+tavily-python>=0.7,<1
+streamlit>=1.43,<2
+requests>=2.32,<3
+nemoguardrails==0.23.0
+deepeval>=4.2,<6
+pytest>=8,<9

@@ -1,0 +1,38 @@
+services:
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+
+    container_name: pdf-rag-backend
+
+    ports:
+      - "8000:8000"
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./data:/app/data
+
+    restart: unless-stopped
+
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+
+    container_name: pdf-rag-frontend
+
+    ports:
+      - "8501:8501"
+
+    environment:
+      API_URL: http://backend:8000
+
+    depends_on:
+      - backend
+
+    restart: unless-stopped

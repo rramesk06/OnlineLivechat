@@ -1,0 +1,14 @@
+[
+  {
+    "input": "What technologies are used in the architecture?",
+    "expected_output": "The answer should identify technologies explicitly present in the indexed PDF and avoid inventing technologies."
+  },
+  {
+    "input": "What database or search technologies are mentioned?",
+    "expected_output": "The answer should be grounded in the PDF context and identify database/search technologies that are explicitly mentioned."
+  },
+  {
+    "input": "What is the deployment architecture?",
+    "expected_output": "The answer should summarize deployment-related information from the PDF when present."
+  }
+]

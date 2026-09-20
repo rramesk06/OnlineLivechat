@@ -1,0 +1,11 @@
+.venv/
+eval-venv/
+__pycache__/
+*.pyc
+.git/
+.env
+.streamlit/secrets.toml
+evaluation/
+*.log
+
+data/
