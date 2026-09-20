@@ -307,7 +307,17 @@ def heuristic_relevance(question: str, results: List[Dict[str, Any]]) -> bool:
 def is_context_relevant(question: str, results: List[Dict[str, Any]]) -> bool:
     if not results:
         return False
-    context = "\n\n".join(f"[{i+1}] {r['text']}" for i, r in enumerate(results))[:12000]
+
+    # Accept strong deterministic retrieval evidence first.
+    # This prevents the LLM relevance check from rejecting
+    # clearly relevant PDF passages.
+    if heuristic_relevance(question, results):
+        return True
+
+    context = "\n\n".join(
+        f"[{i+1}] {r['text']}" for i, r in enumerate(results)
+    )[:12000]
+
     try:
         response = openai_client.chat.completions.create(
             model=OPENAI_MODEL,
@@ -316,12 +326,29 @@ def is_context_relevant(question: str, results: List[Dict[str, Any]]) -> bool:
             messages=[
                 {
                     "role": "system",
-                    "content": "Decide whether the supplied document passages contain enough relevant information to answer the user's question. Return only JSON {\"relevant\":true/false}. Do not use outside knowledge.",
+                    "content": (
+                        "Decide whether the supplied document passages contain "
+                        "enough relevant information to answer the user's question. "
+                        "Return only JSON {\"relevant\":true/false}. "
+                        "Do not use outside knowledge."
+                    ),
                 },
-                {"role": "user", "content": f"Question: {question}\n\nPassages:\n{context}"},
+                {
+                    "role": "user",
+                    "content": (
+                        f"Question: {question}\n\n"
+                        f"Passages:\n{context}"
+                    ),
+                },
             ],
         )
-        return bool(json.loads(response.choices[0].message.content or "{}").get("relevant", False))
+
+        return bool(
+            json.loads(
+                response.choices[0].message.content or "{}"
+            ).get("relevant", False)
+        )
+
     except Exception:
         return heuristic_relevance(question, results)
 
